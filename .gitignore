@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+variables.env
+One-Note-to-Rule-Them-All.iml
+/.idea/
