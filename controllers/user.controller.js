@@ -17,6 +17,9 @@ exports.validateInfo = [
     .normalizeEmail()
     .trim()
     .escape(),
+  check('email')
+    .isLength({ max: 100 })
+    .withMessage('Due to a technical issue, emails cannot be longer than 100 characters'),
   sanitizeBody('password'),
   check('password')
     .not()
