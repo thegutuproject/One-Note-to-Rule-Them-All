@@ -1,12 +1,14 @@
+require('dotenv').config({ path: 'variables.env' });
+
 module.exports = {
   development: {
     client: 'mysql',
     useNullAsDefault: true,
     connection: {
-      host : '162.244.80.100',
-      user : 'alexgutu_note-admin',
-      password : 'LkTCi&DlXwTI',
-      database : 'alexgutu_one-note-to-rule-them-all',
+      host : process.env.DB_HOST,
+      user : process.env.DB_USER,
+      password : process.env.DB_PASSWORD,
+      database : process.env.DB_DATABASE,
       charset : 'utf8mb4'
     },
     migrations: {
