@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { check, validationResult, sanitizeBody } = require('express-validator');
 
+const User = require('../models/user');
+
 exports.validateInfo = [
 
   sanitizeBody('email'),
@@ -42,10 +44,12 @@ exports.validateInfo = [
   }];
 
 async function registerUser(req, res, next) {
+
   const data = {
     email: req.body.email,
     password: req.body.password
   };
+  console.log(data);
 
   try {
     const userDbQuery = await User.query().insertAndFetch(data);
