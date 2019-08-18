@@ -1,0 +1,17 @@
+mixin loginForm()
+    form.align-items-center(action="/login" method="POST")
+      div.col-12
+        div.form-group
+          label(for='email') Email
+          input.form-control(name='email', type='email', aria-describedby='emailHelp', placeholder='Enter Email')
+          small.form-text.text-muted We'll never share your email with anyone else.
+      div.col-12
+        div.form-group
+          label(for='password') Password
+          input.form-control(name='password', type='password', placeholder='Password')
+      div.col-12
+        div.form-group.form-check
+          input.form-check-input(name='rememberMe', type='checkbox')
+          label.form-check-label(for='rememberMe') Keep me signed in for 24h
+      div.col-12
+        input.btn.btn-primary(type='submit', value='Submit')

@@ -7,8 +7,7 @@ exports.validateInfo = [
 
   sanitizeBody('email'),
   check('email')
-    .not()
-    .isEmpty()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Email required!'),
   check('email')
     .isEmail()
@@ -22,8 +21,7 @@ exports.validateInfo = [
     .withMessage('Due to a technical issue, emails cannot be longer than 100 characters'),
   sanitizeBody('password'),
   check('password')
-    .not()
-    .isEmpty()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Password required!'),
   check('password')
     .isLength({ min: 8 })
@@ -31,39 +29,38 @@ exports.validateInfo = [
   check('password')
     .trim()
     .escape(),
-
-  // sanitizeBody('password-confirm'),
-  // check('password-confirm')
-  //   .equals('password')
-  //   .withMessage("Passwords do not match"),
+  check('passwordConfirmation')
+    .exists({ checkNull: true, checkFalsy: true })
+    .custom((value, { req }) => {
+      return value === req.body.password
+    })
+    .withMessage('passwordConfirmation field must have the same value as the password field'),
   (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.sendStatus(422).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
 
     next();
   }];
 
 async function registerUser(req, res, next) {
-
   const data = {
     email: req.body.email,
     password: req.body.password
   };
-  console.log(data);
 
   try {
     const userDbQuery = await User.query().insertAndFetch(data);
     if (userDbQuery) {
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: 'User successfully created!'
       })
     }
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: 'An error has occurred.',
       error: error
@@ -71,11 +68,12 @@ async function registerUser(req, res, next) {
   }
 }
 
-async function signIn(req, res, next) {
+async function loginUser(req, res, next) {
 
   const data = {
     email: req.body.email,
-    password: req.body.password
+    password: req.body.password,
+    rememberMe: req.body.rememberMe
   };
 
   try {
@@ -83,22 +81,44 @@ async function signIn(req, res, next) {
     console.log(user);
     const passwordValid = await user.verifyPassword(data.password);
     if (passwordValid) {
+      const token = jwt.sign({
+        email: data.email,
+        timeIssued: moment.now()
+      }, process.env.JWT_SECRET, { expiresIn: data.rememberMe ? '24h' : process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME });
 
-      const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME });
+      console.log("req.cookies.authToken", req.cookies.authToken);
 
-      res.status(200).json({
+      let cookie = req.cookies.authToken;
+      console.log("cookie", cookie);
+      if (!cookie) {
+        return res.cookie('authToken', token, {
+          // if user ticked "remember me",
+          // cookie is 24 hours, else, 30 min
+          maxAge: data.rememberMe ? 86400000 : 1800000,
+
+          httpOnly: true,
+          secure: false
+        })
+      }
+
+      // console.log(moment.utc(moment.now()))
+      console.log(moment.utc().format());
+
+      console.log('req.cookies.authToken', req.cookies.authToken);
+
+      return res.status(200).json({
         success: true,
         message: 'User successfully authenticated!',
         token: token
-      })
+      });
     } else {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: 'Incorrect username or password'
       });
     }
   } catch (error) {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: 'Something went wrong :/',
       error: error
@@ -107,4 +127,4 @@ async function signIn(req, res, next) {
 }
 
 exports.registerUser = registerUser;
-exports.signIn = signIn;
+exports.loginUser = loginUser;
