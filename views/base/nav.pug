@@ -1,12 +1,23 @@
+include ../mixins/loginForm
+
 nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  a.navbar-brand(href='/') Home
-  button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
-    span.navbar-toggler-icon
-  div#navbarSupportedContent.collapse.navbar-collapse
-    ul.navbar-nav.mr-auto
-      for item in h.menu
-        li.nav-item(class=-currentPath.startsWith(item.slug) ? 'active':'')
-          a.nav-link(href=`${item.slug}`)
-            span(class=-currentPath.startsWith(item.slug) ? 'sr-only':'') #{item.title}
-    span.navbar-text
-      a.nav-link(href='/register') Sign Up
+  div.container
+    a.navbar-brand(href='/about')
+      img.logo(src='/images/icons/logo_ma.svg')
+    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent')
+      span.navbar-toggler-icon
+    div#navbarSupportedContent.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        for item in h.menu
+          li.nav-item(class={active: currentPath.startsWith(item.slug)})
+            a.nav-link(href=`${item.slug}`)
+              span #{item.title}
+      ul.nav.justify-content-end
+        li.nav-item
+          a.nav-link(href='#', data-toggle='modal', data-target='#logInModal')
+            span.text-muted Log In
+      //span.navbar-text
+        a.nav-link(href='#', data-toggle='modal', data-target='#logInModal') Log In
+
+
+    +loginForm()
