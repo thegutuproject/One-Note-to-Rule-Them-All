@@ -1,22 +1,22 @@
 extends base/layout
 
 block content
-  form.align-items-center.mx-auto.my-auto(action="/register" method="POST")
-    div.col-12
-      div.form-group
-        label(for='email') Email
-        input.form-control(name='email', type='email', aria-describedby='emailHelp', placeholder='Enter Email')
-        small.form-text.text-muted We'll never share your email with anyone else.
-    div.col-12
-      div.form-group
-        label(for='password') Password
-        input.form-control(name='password', type='password', placeholder='Password')
-    div.col-12
-      div.form-group
-        input.form-control(name='passwordConfirmation', type='password', placeholder='Please confirm password')
-    div.col-12
-      div.form-group.form-check
-        input.form-check-input(type='checkbox')
-        label.form-check-label(for='rememberMe') Keep me signed in for 24h
-    div.col-12
-      input.btn.btn-primary(type='submit', value='Submit')
+  div.row.h-100
+    div.col-xs-12.col-sm-10.col-md-8.col-lg-6.mx-auto.align-self-center
+      form(action="/register" method="POST")
+        div.form-group
+          input.form-control(id='registerEmail', name='email', type='email', placeholder='Email', tabindex='5', autofocus, required)
+        div.form-group
+          div.input-group
+            span.input-group-btn
+              button.btn.btn-secondary(id='viewPassword1Button', type="button", tabindex='6')
+                i.fa.fa-eye-slash(id='password1Icon')
+            input.form-control(name='password', id='password1' type="password", placeholder="Password", aria-label="Enter Password", tabindex='7', required)
+        div.form-group
+          div.input-group
+            span.input-group-btn
+              button.btn.btn-secondary(id='viewPassword2Button', type="button", tabindex='8')
+                i.fa.fa-eye-slash(id='password2Icon')
+            input.form-control(name='password', id='password2' type="password", placeholder="Confirm Password", aria-label="Confirm Password", tabindex='9', required)
+        div.form-group
+          button.btn.btn-primary.btn-block.btn-lg(id='registerButton', type='submit', tabindex='10') Register

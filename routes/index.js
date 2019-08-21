@@ -16,4 +16,6 @@ router.get('/login', homeController.loginForm);
 router.post('/login', userController.validateInfo, userController.loginUser);
 
 router.get('/notes', homeController.notes);
+
+router.get('/about', homeController.about);
 module.exports = router;

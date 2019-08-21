@@ -1,0 +1,73 @@
+extends base/layout
+
+block content
+  div.row
+    div.col-12
+      div.jumbotron.py-3.my-5
+        h3 What is this?
+        p.lead A simple note taking app built from the ground up.
+        hr.mx-auto
+        p.
+          In order to showcase our skills, we decided to build a note taking app.
+          I know, I know, it sounds super basic, and... well it is. However, one
+          thing I've personally struggled with, is starting a project from absolute
+          scratch. Sure, I can build out an API if someone already started, piece
+          it together as I go along and eventually figure it out. I didn't want that.
+          I wanted a brand new, from scratch backend with login, database, and UI.
+          So here we are, its still a work in progress but its slowly coming together.
+        h4 So what can you do?
+        span.
+          Well, first you must sign up. The password is hashed before stored, so please
+          dont worry about clear text passwords. After you sign up, you can go ahead and
+          log in. You can then go to the "Notes" page and see your notes you've saved.
+          There, you can proceed to make new notes, or delete old ones, or even edit them.
+          Up to you!
+        hr.mx-auto
+        div.row.py-0
+          div.col-xs-12.col-s-12.col-md-4.col-lg-4
+            div.text-center
+              button.btn.btn-primary(
+                class='mx-4 my-4',
+                type='button',
+                data-toggle='collapse',
+                data-target='#collapseFrontEnd'
+                role='button') Frontend
+            div#collapseFrontEnd.collapse
+              div.card
+                div.card-header.text-center Front End
+                ul.list-group.list-group-flush
+                  li.list-group-item PUG
+                  li.list-group-item HTML
+                  li.list-group-item Bootstrap v4
+
+          div.col-xs-12.col-s-12.col-md-4.col-lg-4
+            div.text-center
+              button.btn.btn-primary.text-center(
+                class='mx-4 my-4',
+                type='button',
+                data-toggle='collapse',
+                data-target='#collapseBackEnd'
+                role='button') Backend
+            div#collapseBackEnd.collapse
+              div.card
+                div.card-header.text-center Back End
+                ul.list-group.list-group-flush
+                  li.list-group-item NodeJS
+                  li.list-group-item Express
+                  li.list-group-item Passport
+
+          div.col-xs-12.col-s-12.col-md-4.col-lg-4
+            div.text-center
+              button.btn.btn-primary(
+                class='mx-4 my-4',
+                type='button',
+                data-toggle='collapse',
+                data-target='#collapseDatabase'
+                role='button') Database
+            div#collapseDatabase.collapse
+              div.card
+                div.card-header.text-center Database
+                ul.list-group.list-group-flush
+                  li.list-group-item MySQL
+                  li.list-group-item ObjectionJS
+                  li.list-group-item Knex

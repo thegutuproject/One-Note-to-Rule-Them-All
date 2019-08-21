@@ -14,3 +14,7 @@ exports.loginForm = (req, res) => {
 exports.notes = (req, res) => {
   res.render('notes', { title: 'Notes' });
 };
+
+exports.about = (req, res) => {
+  res.render('about', { title: 'About' });
+};

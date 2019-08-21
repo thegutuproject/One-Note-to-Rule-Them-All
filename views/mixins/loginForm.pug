@@ -1,17 +1,30 @@
 mixin loginForm()
-    form.align-items-center(action="/login" method="POST")
-      div.col-12
-        div.form-group
-          label(for='email') Email
-          input.form-control(name='email', type='email', aria-describedby='emailHelp', placeholder='Enter Email')
-          small.form-text.text-muted We'll never share your email with anyone else.
-      div.col-12
-        div.form-group
-          label(for='password') Password
-          input.form-control(name='password', type='password', placeholder='Password')
-      div.col-12
-        div.form-group.form-check
-          input.form-check-input(name='rememberMe', type='checkbox')
-          label.form-check-label(for='rememberMe') Keep me signed in for 24h
-      div.col-12
-        input.btn.btn-primary(type='submit', value='Submit')
+
+  div#logInModal.modal.fade(tabindex='1', role='dialog', aria-labelledby='logInModalLabel', aria-hidden='true')
+    div.modal-dialog(role='document')
+      div.modal-content
+        div.modal-header
+          h5.modal-title Log In
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        div.modal-body
+          div.container.d-flex.align-items-center.align-self-center
+            form.col-xs-12.mx-auto(action="/login" method="POST")
+              div.form-group
+                input.form-control(id='loginEmail', name='email', type='email', placeholder='Email', tabindex='5', autofocus, required)
+              div.form-group
+                div.input-group
+                  span.input-group-btn
+                    button.btn.btn-secondary(id='passwordButton', type="button", tabindex='6')
+                      i.fa.fa-eye-slash(id='passwordIcon')
+                  input.form-control(name='password', id='password', type="password", placeholder="Password", aria-label="Enter Password", tabindex='7', required)
+              div.form-group.form-check
+                input#rememberMeCheckbox.form-check-input(name='rememberMe', type='checkbox')
+                label.form-check-label(for='rememberMeCheckbox') Keep me signed in for 24h
+              div.form-group
+                button.btn.btn-primary.btn-block.btn-lg(id='loginButton', type='submit', tabindex='8') Login
+                a.nav-link.small.text-secondary.text-center.my-1(href='.hide', tabindex='9', data-toggle="collapse", aria-expanded="true", aria-controls="#password") Forgot Password?
+              div.form-group
+                hr
+              div.form-group
+                a.nav-link.text-center(href='/register', tabindex='10') New user? Sign up
