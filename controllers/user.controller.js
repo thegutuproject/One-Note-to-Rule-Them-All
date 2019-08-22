@@ -89,7 +89,7 @@ exports.registerUser = async (req, res, next) => {
   };
 
   try {
-    // const userDbQuery = await User.query().insertAndFetch(data);
+    const userDbQuery = await User.query().insertAndFetch(data);
     if (userDbQuery) {
       return res.status(200).json({
         success: true,
