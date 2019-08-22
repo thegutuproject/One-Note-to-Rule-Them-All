@@ -32,13 +32,8 @@ passport.use(
     passwordField: 'password',
     session: false
   }, async (email, password, done) => {
-    console.log("inside local strategy");
     try {
-      console.log('inside try');
-      console.log('email', email);
-      console.log('password', password);
       const user = await User.query().where({ email: email }).first();
-      console.log('user', user);
       if (!user) {
         return done(null, false, { message: 'Email does not exist. Please register.' })
       } else {
