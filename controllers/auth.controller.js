@@ -1,8 +1,8 @@
 const passport = require('passport');
 
 exports.login = passport.authenticate('login', {
-  failureRedirect: '/test',
-  successRedirect: '/fuckyou',
+  failureRedirect: '/about',
+  successRedirect: '/notes',
   session: false
 });
 
