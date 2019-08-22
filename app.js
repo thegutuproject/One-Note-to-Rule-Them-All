@@ -5,7 +5,10 @@ const routes = require('./routes/index');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const helpers = require('./helpers');
+const promisify = require("es6-promisify");
 require('./handlers/passport');
+
+const errorHandlers = require('./handlers/errorHandlers');
 
 const app = express();
 
@@ -25,16 +28,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // populates req.cookies with any cookies that came along with the request
 app.use(cookieParser());
 
-// Passport JS is what we use to handle our logins
-// app.use(passport.initialize());
-
-// pass variables to our templates + all requests
-app.use((req, res, next) => {
-  res.locals.h = helpers;
-  res.locals.currentPath = req.path;
-  next();
-});
-
 // Database connection - Knex
 const Knex = require('knex');
 const knexConfig = require('./knexfile')[environment];
@@ -48,6 +41,38 @@ const knexConnection = Knex(knexConfig);
 // the Model.bindKnex method.
 Model.knex(knexConnection);
 
+// Passport JS is what we use to handle our logins
+app.use(passport.initialize());
+
+// pass variables to our templates + all requests
+app.use((req, res, next) => {
+  res.locals.h = helpers;
+  res.locals.user = req.user || null;
+  res.locals.currentPath = req.path;
+  next();
+});
+
+// promisify some callback based APIs
+app.use((req, res, next) => {
+  req.login = promisify(req.login, req);
+  next();
+});
+
 app.use('/', routes);
+
+// If that above routes didnt work, we 404 them and forward to error handler
+// app.use(errorHandlers.notFound);
+
+// One of our error handlers will see if these errors are just validation errors
+// app.use(errorHandlers.flashValidationErrors);
+
+// Otherwise this was a really bad error we didn't expect! Shoot eh
+// if (app.get('env') === 'development') {
+//   /* Development Error Handler - Prints stack trace */
+//   app.use(errorHandlers.developmentErrors);
+// }
+
+// production error handler
+// app.use(errorHandlers.productionErrors);
 
 module.exports = app;

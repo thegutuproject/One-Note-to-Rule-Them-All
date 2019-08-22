@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { check, validationResult, sanitizeBody } = require('express-validator');
-
+const passport = require('passport');
 const User = require('../models/user');
+const moment = require('moment');
 
-exports.validateInfo = [
+exports.validateRegistrationInfo = [
 
   sanitizeBody('email'),
   check('email')
@@ -45,14 +46,50 @@ exports.validateInfo = [
     next();
   }];
 
-async function registerUser(req, res, next) {
+exports.validateLoginInfo = [
+
+  sanitizeBody('email'),
+  check('email')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Email required!'),
+  check('email')
+    .isEmail()
+    .withMessage('Email must be valid.'),
+  check('email')
+    .normalizeEmail()
+    .trim()
+    .escape(),
+  check('email')
+    .isLength({ max: 100 })
+    .withMessage('Due to a technical issue, emails cannot be longer than 100 characters'),
+  sanitizeBody('password'),
+  check('password')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Password required!'),
+  check('password')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 chars long!'),
+  check('password')
+    .trim()
+    .escape(),
+  (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    next();
+  }];
+
+exports.registerUser = async (req, res, next) => {
   const data = {
     email: req.body.email,
     password: req.body.password
   };
 
   try {
-    const userDbQuery = await User.query().insertAndFetch(data);
+    // const userDbQuery = await User.query().insertAndFetch(data);
     if (userDbQuery) {
       return res.status(200).json({
         success: true,
@@ -66,10 +103,9 @@ async function registerUser(req, res, next) {
       error: error
     })
   }
-}
+};
 
-async function loginUser(req, res, next) {
-
+exports.loginUser = async (req, res, next) => {
   const data = {
     email: req.body.email,
     password: req.body.password,
@@ -91,7 +127,7 @@ async function loginUser(req, res, next) {
       let cookie = req.cookies.authToken;
       console.log("cookie", cookie);
       if (!cookie) {
-        return res.cookie('authToken', token, {
+        res.cookie('authToken', token, {
           // if user ticked "remember me",
           // cookie is 24 hours, else, 30 min
           maxAge: data.rememberMe ? 86400000 : 1800000,
@@ -100,11 +136,6 @@ async function loginUser(req, res, next) {
           secure: false
         })
       }
-
-      // console.log(moment.utc(moment.now()))
-      console.log(moment.utc().format());
-
-      console.log('req.cookies.authToken', req.cookies.authToken);
 
       return res.status(200).json({
         success: true,
@@ -124,7 +155,4 @@ async function loginUser(req, res, next) {
       error: error
     })
   }
-}
-
-exports.registerUser = registerUser;
-exports.loginUser = loginUser;
+};
