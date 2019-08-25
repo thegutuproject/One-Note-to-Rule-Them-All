@@ -1,5 +1,8 @@
 include ../mixins/loginForm
 
+- let loginPage = currentPath.startsWith('/login')
+- let user = locals.user;
+
 nav.navbar.navbar-expand-lg.navbar-light.bg-light
   div.container
     a.navbar-brand(href='/about')
@@ -12,9 +15,28 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
           li.nav-item(class={active: currentPath.startsWith(item.slug)})
             a.nav-link(href=`${item.slug}`)
               span #{item.title}
-      ul.nav.justify-content-end
-        li.nav-item
-          a.nav-link(href='#', data-toggle='modal', data-target='#logInModal')
-            span.text-muted Log In
+      if !loginPage
+        if user
+          ul.nav.justify-content-end
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                span.text-muted My Account
+              div.dropdown-menu
+                a.dropdown-item(href='account') View Account
+                div.dropdown-divider
+                a.dropdown-item(href='logout') Logout
+        if !user
+          ul.nav.justify-content-end
+            li.nav-item
+              a.nav-link(href='#', data-toggle='modal', data-target='#logInModal')
+                span.text-muted Log In
 
-    +loginForm()
+    div#logInModal.modal.fade(tabindex='1', role='dialog', aria-labelledby='logInModalLabel', aria-hidden='true')
+      div.modal-dialog(role='document')
+        div.modal-content
+          div.modal-header
+            h5.modal-title Log In
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          div.modal-body
+            +loginForm()

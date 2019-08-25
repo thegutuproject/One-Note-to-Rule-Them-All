@@ -34,6 +34,17 @@ class User extends mixin(BaseModel, [
       }
     }
   }
+
+  static relationMappings = {
+    notes: {
+      relation: Model.HasManyRelation,
+      modelClass: 'Note',
+      join: {
+        from: 'users.id',
+        to: 'notes.user_id'
+      }
+    }
+  }
 }
 
 module.exports = User;

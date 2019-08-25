@@ -25,10 +25,21 @@ class Note extends mixin(BaseModel, [
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['title', 'description'],
+      required: ['title', 'body'],
       properties: {
         title: { type: 'string' },
-        description: { type: 'string' },
+        body: { type: 'string' },
+      }
+    }
+  }
+
+  static relationMappings = {
+    owner: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: 'User',
+      join: {
+        from: 'notes.user_id',
+        to: 'users.id'
       }
     }
   }
