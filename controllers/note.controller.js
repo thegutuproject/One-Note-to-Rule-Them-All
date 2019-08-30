@@ -23,9 +23,4 @@ exports.saveNote = async (req, res, next) => {
 
   const user = await User.query().first().where({ id: data.user_id });
   const note = await user.$relatedQuery('notes').insert({ title: data.title, body: data.body });
-
-  console.log('User: ', user.email);
-  console.log('Note Title: ', data.title);
-  console.log('Note Body: ', data.body);
-
 };

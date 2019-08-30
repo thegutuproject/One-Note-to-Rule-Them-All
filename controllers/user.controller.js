@@ -115,24 +115,6 @@ exports.loginUser = async (req, res, next) => {
     const user = await User.query().first().where({ email: data.email });
     const passwordValid = await user.verifyPassword(data.password);
     if (passwordValid) {
-      // const token = jwt.sign({
-      //   id: user.id,
-      //   email: user.email,
-      //   timeIssued: moment.now()
-      // }, process.env.JWT_SECRET, { expiresIn: data.rememberMe ? '24h' : process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME });
-      //
-      // let cookie = req.cookies.authToken;
-      //
-      // if (!cookie) {
-      //   res.cookie('authToken', token, {
-      //     // if user ticked "remember me",
-      //     // cookie is 24 hours, else, 30 min
-      //     maxAge: data.rememberMe ? 86400000 : 1800000,
-      //
-      //     httpOnly: true,
-      //     secure: false
-      //   })
-      // }
 
       return res.status(200).json({
         success: true,
