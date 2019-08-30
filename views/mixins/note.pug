@@ -1,5 +1,6 @@
 mixin note(note = {})
-  div.card.m-3.shadow
+  div.card.bg-light.border-secondary.m-3.shadow.note
+    div.card-header
+      h5.text-truncate #{note.title}
     div.card-body
-      h5.card-title #{note.title}
-      p.card-text #{note.body}
+      span.card-text #{note.body}

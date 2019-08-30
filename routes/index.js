@@ -17,6 +17,8 @@ router.post('/register', userController.validateRegistrationInfo, authController
 router.get('/login', homeController.loginForm);
 router.post('/login', userController.validateLoginInfo, authController.login);
 
+router.get('/logout', authController.logout);
+
 router.get('/about', homeController.about);
 
 router.get('/notes/', authController.isLoggedIn, noteController.getNotes);
