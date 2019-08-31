@@ -1,6 +1,4 @@
-const jwt = require('jsonwebtoken');
 const { check, validationResult, sanitizeBody } = require('express-validator');
-const passport = require('passport');
 const User = require('../models/user');
 const moment = require('moment');
 
@@ -31,13 +29,14 @@ exports.validateRegistrationInfo = [
     .trim()
     .escape(),
   check('passwordConfirmation')
+    .trim()
     .exists({ checkNull: true, checkFalsy: true })
     .custom((value, { req }) => {
       return value === req.body.password
     })
     .withMessage('passwordConfirmation field must have the same value as the password field'),
   (req, res, next) => {
-
+    console.log(req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
@@ -114,28 +113,8 @@ exports.loginUser = async (req, res, next) => {
 
   try {
     const user = await User.query().first().where({ email: data.email });
-    console.log(user);
     const passwordValid = await user.verifyPassword(data.password);
     if (passwordValid) {
-      const token = jwt.sign({
-        email: data.email,
-        timeIssued: moment.now()
-      }, process.env.JWT_SECRET, { expiresIn: data.rememberMe ? '24h' : process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME });
-
-      console.log("req.cookies.authToken", req.cookies.authToken);
-
-      let cookie = req.cookies.authToken;
-      console.log("cookie", cookie);
-      if (!cookie) {
-        res.cookie('authToken', token, {
-          // if user ticked "remember me",
-          // cookie is 24 hours, else, 30 min
-          maxAge: data.rememberMe ? 86400000 : 1800000,
-
-          httpOnly: true,
-          secure: false
-        })
-      }
 
       return res.status(200).json({
         success: true,
